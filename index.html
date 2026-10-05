@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Does Adam miss Emily?</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Miss Emily">
+<meta name="theme-color" content="#ffd9e0">
+<style>
+:root{--bg:#ffe3e8;--ink:#5a1a2e;--btn:#e8365d;--btn2:#b81e43;--duck:#ffd23f;--crab:#e8452c}
+@media (prefers-color-scheme:dark){:root{--bg:#2a0f1a;--ink:#ffd9e0}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Avenir Next","Trebuchet MS",system-ui,sans-serif;
+ padding:env(safe-area-inset-top) 20px env(safe-area-inset-bottom);overflow-x:hidden;
+ display:flex;flex-direction:column;align-items:center;user-select:none;-webkit-user-select:none}
+#sky{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.heart{position:absolute;bottom:-40px;animation:rise linear forwards}
+@keyframes rise{to{transform:translateY(-115vh) rotate(25deg);opacity:0}}
+main{position:relative;z-index:1;width:100%;max-width:420px;text-align:center;padding:28px 0 30px}
+h1{font-size:1.7rem;line-height:1.2;margin:0 0 6px}
+.sub{margin:0 0 22px;opacity:.75}
+#big{width:min(72vw,280px);aspect-ratio:1;border:0;border-radius:50%;color:#fff;font:700 1.35rem/1.2 inherit;
+ background:radial-gradient(circle at 35% 30%,#ff7a96,var(--btn) 55%,var(--btn2));
+ box-shadow:0 10px 0 var(--btn2),0 18px 30px rgba(184,30,67,.4);transition:transform .08s,box-shadow .08s;
+ touch-action:manipulation;cursor:pointer;padding:20px}
+#big:active{transform:translateY(8px);box-shadow:0 2px 0 var(--btn2),0 6px 14px rgba(184,30,67,.4)}
+#msg{min-height:4.6em;margin:24px 0 4px;font-size:1.3rem;font-weight:700;white-space:pre-line;font-family:"Bradley Hand","Segoe Print","Comic Sans MS",cursive;line-height:1.35}
+#msg.typing::after{content:"|";margin-left:2px;animation:blink .7s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+#count{font-size:1.4rem;font-weight:800;margin-bottom:10px;font-variant-numeric:tabular-nums}
+#count small{display:block;font-size:.85rem;font-weight:500;opacity:.75}
+#meter{height:14px;border-radius:7px;background:rgba(0,0,0,.12);overflow:hidden;margin:0 auto;max-width:300px}
+#fill{height:100%;width:99.9%;background:var(--btn);transition:width .3s}
+#meter.over #fill{background:linear-gradient(90deg,var(--btn),#ff9ab0,var(--btn));background-size:200% 100%;animation:shine 1.5s linear infinite}
+@keyframes shine{to{background-position:-200% 0}}
+#love{margin:10px auto 0;max-width:330px;opacity:0;transform:translateY(8px);transition:opacity .5s,transform .5s;min-height:4.5em;
+ font-family:"Bradley Hand","Segoe Print","Comic Sans MS",cursive}
+#love.show{opacity:1;transform:none}
+#love .lead{font-size:.95rem;opacity:.75;margin-bottom:4px}
+#loveItem{font-size:1.15rem;font-weight:700;line-height:1.35}
+#scene{margin-top:22px}
+#scene svg{width:100%;height:auto;display:block;color:var(--ink)}
+#lobster{animation:wiggle 2.4s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
+#duckg{animation:bob 2s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
+#hrt{animation:beat 1.2s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 50%}
+@keyframes wiggle{50%{transform:rotate(-2deg)}}
+@keyframes bob{50%{transform:translateY(-6px)}}
+@keyframes beat{50%{transform:scale(1.3)}}
+@media (prefers-reduced-motion:reduce){#lobster,#duckg,#hrt,#meter.over #fill{animation:none}.heart{display:none}}
+#clock{margin:-8px auto 18px;font-size:.9rem;opacity:.85;line-height:1.5}
+#clock b{font-variant-numeric:tabular-nums}
+#mile{margin:14px auto 0;max-width:330px;padding:12px 16px;border-radius:16px;background:var(--btn);color:#fff;font-weight:700;
+ opacity:0;transform:scale(.9);transition:opacity .4s,transform .4s;height:0;overflow:hidden;padding-top:0;padding-bottom:0}
+#mile.show{opacity:1;transform:none;height:auto;padding-top:12px;padding-bottom:12px}
+#back{margin-top:20px;border:2px solid var(--btn);background:transparent;color:var(--ink);font:700 1.05rem/1 inherit;
+ padding:14px 22px;border-radius:999px;touch-action:manipulation;cursor:pointer}
+#back:active{background:var(--btn);color:#fff}
+#backNote{min-height:1.4em;margin-top:8px;font-size:.9rem;opacity:.8}
+</style>
+</head>
+<body>
+<div id="sky"></div>
+<main>
+  <h1>Does Adam miss Emily?</h1>
+  <p class="sub">Press the button to find out</p>
+  <div id="clock"></div>
+  <button id="big" aria-label="Does Adam miss Emily?">Does Adam miss Emily?</button>
+  <div id="msg" aria-live="polite"></div>
+  <div id="love"><div class="lead">Here's something I love about you 💕</div><div id="loveItem"></div></div>
+  <div id="count"></div>
+  <div id="meter"><div id="fill"></div></div>
+  <div id="mile"></div>
+
+  <div id="scene">
+<svg viewBox="0 0 1040 680" aria-label="Adam the lobster and Emily the duck" fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+<g transform="translate(-30,-965)">
+ <g id="lobster">
+  <path d="M82 1028 L118 1083 L152 1025 Q200 1060 185 1115 Q165 1168 118 1170 Q60 1160 47 1105 Q45 1060 82 1028 Z"/>
+  <path d="M472 1028 L508 1083 L542 1025 Q590 1060 575 1115 Q555 1168 508 1170 Q450 1160 437 1105 Q435 1060 472 1028 Z"/>
+  <path d="M148 1163 L228 1245 M478 1163 L400 1245 M188 980 L290 1155 M437 980 L335 1155"/>
+  <ellipse cx="312" cy="1297" rx="92" ry="140"/>
+  <circle cx="282" cy="1215" r="9" fill="currentColor" stroke="none"/><circle cx="344" cy="1215" r="9" fill="currentColor" stroke="none"/>
+  <path d="M278 1263 Q312 1290 348 1263"/>
+  <circle cx="252" cy="1268" r="14"/><circle cx="375" cy="1268" r="14"/>
+  <path d="M162 1338 L215 1318 M166 1390 L222 1362 M190 1438 L243 1405 M410 1318 L465 1338 M400 1362 L460 1392 M380 1405 L435 1438"/>
+  <ellipse cx="312" cy="1468" rx="68" ry="28"/><ellipse cx="312" cy="1520" rx="52" ry="22"/>
+  <ellipse cx="285" cy="1592" rx="22" ry="35"/><ellipse cx="340" cy="1592" rx="22" ry="35"/>
+  <path d="M312 1552 Q298 1600 312 1637 Q326 1600 312 1552 Z"/>
+ </g>
+ <path d="M575 1133 Q620 1360 780 1482"/>
+ <g id="duckg">
+  <circle cx="827" cy="1340" r="48"/>
+  <circle cx="808" cy="1325" r="6" fill="currentColor" stroke="none"/>
+  <path d="M783 1322 L730 1338 L783 1355"/>
+  <path d="M825 1292 Q835 1272 852 1278"/>
+  <path d="M797 1385 L797 1455 M850 1385 L850 1425"/>
+  <ellipse cx="890" cy="1497" rx="112" ry="82"/>
+  <path d="M995 1465 L1055 1435 L1003 1515"/>
+  <path d="M842 1493 Q905 1440 968 1495 Q905 1535 842 1493 Z"/>
+  <path d="M850 1575 L850 1632 L806 1634 M920 1575 L920 1632 L876 1634"/>
+  <path id="hrt" d="M780 1245 C760 1228 755 1212 768 1208 C775 1206 780 1212 780 1215 C780 1212 785 1206 792 1208 C805 1212 800 1228 780 1245 Z"/>
+ </g>
+</g>
+</svg>
+</div>
+  <button id="back">I miss you too 💌</button>
+  <div id="backNote"></div>
+</main>
+<script>
+// ---- Edit these! ----
+const BASE = ["Hi Emily, yes I miss you", "Hi Emily, yes I still miss you"];
+const MORE = [
+  "I miss you more",
+  "I miss you even more now",
+  "I miss you more than before",
+  "I miss you a bit more each time",
+  "I still miss you, more"
+];
+const LOVES = [
+  // add things you love about her here, in quotes, separated by commas
+];
+const EMILY_TZ = "Asia/Ho_Chi_Minh";
+const ADAM_TZ  = "Europe/London";   // change to where Adam lives, e.g. "America/New_York"
+const PHONE    = "";                // optional: leave empty and she picks you in WhatsApp herself
+const REPLY    = "Hi Adam, I miss you too 💗";
+const MILESTONES = {
+  5:   "5 presses! Adam is smiling 🥰",
+  10:  "10 times! I miss you more than ever 💗",
+  25:  "25! Okay, I REALLY miss you 🦞🦆",
+  50:  "50 presses. You're my favourite person 💛",
+  100: "100! Come here, I owe you the biggest hug 🤗"
+};
+const HEARTS = ["💗","💖","💕","🌸","💛"];
+// ---------------------
+const $ = id => document.getElementById(id);
+let n = 0;
+try { n = parseInt(localStorage.getItem("missCount")) || 0; } catch(e){}
+
+function render(){
+  const pct = 99.9 + n * 0.7;
+  const over = pct > 100;
+  $("count").innerHTML = `Adam misses Emily: ${pct.toFixed(1)}%` +
+    `<small>${over ? "Over 100%, and it keeps growing" : "Almost full, but there is always room for more"}</small>`;
+  if (n) $("count").innerHTML += `<small>Emily has pressed it ${n} ${n === 1 ? "time" : "times"} 💗</small>`;
+  const nx = Object.keys(MILESTONES).map(Number).find(k => k > n);
+  if (nx) $("count").innerHTML += `<small>Next milestone: ${nx} presses</small>`;
+  $("fill").style.width = Math.min(100, pct) + "%";
+  $("meter").classList.toggle("over", over);
+}
+function heart(){
+  const h = document.createElement("span");
+  h.className = "heart"; h.textContent = HEARTS[Math.random()*HEARTS.length|0];
+  h.style.left = Math.random()*100 + "%";
+  h.style.fontSize = 18 + Math.random()*28 + "px";
+  h.style.animationDuration = 3 + Math.random()*3 + "s";
+  $("sky").appendChild(h); setTimeout(()=>h.remove(), 6500);
+}
+function hearts(k){ for(let i=0;i<k;i++) setTimeout(heart, i*70); }
+
+let typer;
+function typeOut(text, done){
+  clearInterval(typer);
+  let i = 0; const el = $("msg");
+  el.textContent = ""; el.classList.add("typing");
+  typer = setInterval(() => {
+    el.textContent = text.slice(0, ++i);
+    if (i >= text.length){ clearInterval(typer); el.classList.remove("typing"); if (done) done(); }
+  }, 45);
+}
+$("big").addEventListener("click", () => {
+  n++;
+  try { localStorage.setItem("missCount", n); } catch(e){}
+  const base = n === 1 ? BASE[0] : BASE[1];
+  const more = n === 1 ? "" : "\n" + MORE[Math.random()*MORE.length|0] + " 💗";
+  const love = $("love"); love.classList.remove("show");
+  typeOut(base + more, () => {
+    if (!LOVES.length) return;
+    const k = (n - 1) % LOVES.length;
+    $("loveItem").textContent = (k + 1) + ". " + LOVES[k];
+    love.classList.add("show");
+  });
+  if (navigator.vibrate) navigator.vibrate(30);
+  hearts(14);
+  render(); milestone();
+});
+let mt;
+function milestone(){
+  const m = MILESTONES[n], el = $("mile");
+  if (!m) return;
+  el.textContent = "🏅 " + m; el.classList.add("show"); hearts(40);
+  clearTimeout(mt); mt = setTimeout(() => el.classList.remove("show"), 6000);
+}
+function offset(tz, d){
+  const p = Object.fromEntries(new Intl.DateTimeFormat("en-US", {timeZone: tz, hourCycle: "h23",
+    year:"numeric", month:"numeric", day:"numeric", hour:"numeric", minute:"numeric", second:"numeric"})
+    .formatToParts(d).map(x => [x.type, x.value]));
+  return (Date.UTC(p.year, p.month-1, p.day, p.hour, p.minute, p.second) - Math.floor(d/1000)*1000) / 60000;
+}
+function clock(){
+  try {
+    const d = new Date(), t = tz => d.toLocaleTimeString("en-US", {timeZone: tz, hour:"numeric", minute:"2-digit"});
+    const h = (offset(EMILY_TZ, d) - offset(ADAM_TZ, d)) / 60;
+    const diff = h === 0 ? "same time" : Math.abs(h) + (Math.abs(h) === 1 ? " hour " : " hours ") + (h > 0 ? "ahead" : "behind");
+    $("clock").innerHTML = `🌏 Emily <b>${t(EMILY_TZ)}</b> · 🦞 Adam <b>${t(ADAM_TZ)}</b><br>Emily is ${diff}`;
+  } catch(e){ $("clock").textContent = ""; }
+}
+$("back").addEventListener("click", () => {
+  const num = PHONE.replace(/\D/g, "");   // optional: digits only
+  location.href = "https://wa.me/" + num + "?text=" + encodeURIComponent(REPLY);
+  hearts(25); $("backNote").textContent = "Pick Adam in WhatsApp and tap send 🥰";
+});
+clock(); setInterval(clock, 30000);
+render(); hearts(6);
+setInterval(heart, 1800);
+</script>
+</body>
+</html>
