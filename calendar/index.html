@@ -81,6 +81,20 @@ h3{margin:22px 0 8px;font-size:1.05rem}
 #fbHint{font-size:.8rem;opacity:.65;margin-top:8px}
 #fbOpen{position:fixed;right:14px;bottom:calc(env(safe-area-inset-bottom) + 14px);z-index:5;border:0;background:var(--acc);color:#fff;
  font:700 .95rem/1 inherit;padding:13px 18px;border-radius:999px;box-shadow:0 6px 18px rgba(0,0,0,.25);cursor:pointer;touch-action:manipulation}
+#songOpen{position:fixed;right:14px;max-width:calc(100vw - 28px);text-align:left;line-height:1.25;bottom:calc(env(safe-area-inset-bottom) + 66px);z-index:5;border:0;background:var(--card);color:var(--ink);
+ font:700 .95rem/1 inherit;padding:13px 18px;border-radius:999px;box-shadow:0 6px 18px rgba(0,0,0,.25);cursor:pointer;touch-action:manipulation}
+#song{position:fixed;inset:0;z-index:11;background:rgba(40,10,22,.55);display:none;align-items:center;justify-content:center;padding:20px}
+#song.show{display:flex}
+#song .card{background:var(--card);color:var(--ink);border-radius:24px;padding:22px 18px 16px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.35);animation:pop .4s ease-out}
+#song h2{margin:0 0 2px;font-size:1.4rem}
+#song p{margin:0 0 12px;opacity:.8}
+#songAudio{background:rgba(232,54,93,.1);border-radius:14px;padding:14px;min-height:64px;display:flex;align-items:center;justify-content:center}
+#songAudio audio{width:100%}
+#songStatus{font-size:.9rem;opacity:.8}
+#song .links{display:flex;gap:8px;margin-top:12px}
+#song .links a{flex:1;background:var(--acc);color:#fff;text-decoration:none;font-weight:700;padding:13px 8px;border-radius:999px}
+#songClose{border:0;background:transparent;color:var(--ink);opacity:.7;margin-top:8px;font:inherit;cursor:pointer;padding:8px}
+#songHint{font-size:.78rem;opacity:.6;margin-top:6px}
 </style>
 </head>
 <body>
@@ -119,6 +133,17 @@ h3{margin:22px 0 8px;font-size:1.05rem}
 </g>
 </svg>
     <button id="open">Let's see 🦞🦆</button>
+  </div>
+</div>
+<button id="songOpen">🎵 Press here to see Adam's current fav song!</button>
+<div id="song" role="dialog" aria-label="Adam's current fav song">
+  <div class="card">
+    <h2>🎵 Adam's current fav song</h2>
+    <p><b>MIN – Cà Phê</b></p>
+    <div id="songAudio"><div id="songStatus">Loading 30 second sample...</div></div>
+    <div class="links"><a id="songLink" href="https://open.spotify.com/track/5cvW3PYJeQjRTnj9vHP5Va" target="_blank" rel="noopener">Play on Spotify</a></div>
+    <div id="songHint">Tap Play on Spotify for the full song.</div>
+    <button id="songClose">Close</button>
   </div>
 </div>
 <button id="fbOpen">⭐ Give feedback</button>
@@ -282,6 +307,38 @@ $("fbSend").onclick = () => {
   const msg = "Hi Adam! I rate your 3 month plan " + "⭐".repeat(rating) + " (" + rating + "/5)" + (extra ? "\n" + extra : "");
   location.href = "https://wa.me/" + PHONE.replace(/\D/g, "") + "?text=" + encodeURIComponent(msg);
 };
+const SAMPLE_URL = "cafe.mp3";   // your 30s clip, saved in the same folder as this page
+let sampleTried = false;
+function showAudio(url, fallback){
+  $("songAudio").innerHTML = "";
+  const au = document.createElement("audio");
+  au.controls = true; au.preload = "none"; au.src = url; au.setAttribute("playsinline", "");
+  if (fallback) au.onerror = () => { $("songAudio").innerHTML = '<div id="songStatus">Loading 30 second sample...</div>'; findSample(); };
+  $("songAudio").appendChild(au);
+}
+function noSample(){ $("songStatus") && ($("songStatus").textContent = "Sample not available. Tap Play on Spotify below 🎵"); }
+function findSample(){
+  const cb = "itunesCb" + Date.now();
+  const s = document.createElement("script");
+  const done = setTimeout(() => { s.remove(); noSample(); }, 8000);
+  window[cb] = data => {
+    clearTimeout(done); s.remove(); delete window[cb];
+    const norm = t => (t || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\s+/g, " ").trim();
+    const hit = (data.results || []).find(r => r.previewUrl && norm(r.artistName) === "min" && norm(r.trackName).startsWith("ca phe") && !/sped|remix|lofi|lo-fi|instrumental/.test(norm(r.trackName)));
+    hit ? showAudio(hit.previewUrl) : noSample();
+  };
+  s.onerror = () => { clearTimeout(done); noSample(); };
+  s.src = "https://itunes.apple.com/search?term=" + encodeURIComponent("MIN Ca Phe") + "&media=music&entity=song&limit=25&callback=" + cb;
+  document.head.appendChild(s);
+}
+function openSong(){
+  $("song").classList.add("show");
+  if (sampleTried) return; sampleTried = true;
+  SAMPLE_URL ? showAudio(SAMPLE_URL, true) : findSample();
+}
+function closeSong(){ $("song").classList.remove("show"); const a = document.querySelector("#songAudio audio"); if (a) a.pause(); }
+$("songOpen").onclick = openSong; $("songClose").onclick = closeSong;
+$("song").addEventListener("click", e => { if (e.target.id === "song") closeSong(); });
 paintStars();
 renderAll(); renderHls();
 </script>
