@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Adam's plan</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#ffe3e8">
+<style>
+:root{--bg:#ffe3e8;--ink:#5a1a2e;--card:#fff8f0;--acc:#e8365d;--line:rgba(90,26,46,.15)}
+@media (prefers-color-scheme:dark){:root{--bg:#2a0f1a;--ink:#ffd9e0;--card:#4a1a2c;--line:rgba(255,217,224,.2)}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Avenir Next","Trebuchet MS",system-ui,sans-serif;
+ padding:calc(env(safe-area-inset-top) + 14px) 16px calc(env(safe-area-inset-bottom) + 30px);user-select:none;-webkit-user-select:none}
+main{max-width:440px;margin:0 auto}
+h1{font-size:1.5rem;margin:0 0 4px;text-align:center}
+#disclaimer{margin:8px 0 14px}
+.aim{background:var(--card);border-radius:14px;padding:12px 14px;font-size:.9rem;text-align:center;margin:18px 0 0;line-height:1.55}
+.day.away{background:transparent;border:1.5px dashed var(--line)}
+.day.away .ev{font-size:1.3rem;color:#d12a4c}
+.day.away.sel{background:var(--acc);border-color:var(--acc)}
+.blk{padding:8px 0;line-height:1.4;font-weight:700}
+.nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.nav button{border:0;background:var(--card);color:var(--ink);width:42px;height:42px;border-radius:50%;font-size:1.3rem;cursor:pointer;touch-action:manipulation}
+.nav button:disabled{opacity:.3}
+#title{font-size:1.2rem;font-weight:800}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.dow{text-align:center;font-size:.72rem;opacity:.6;padding-bottom:2px}
+.day{aspect-ratio:1;background:var(--card);border-radius:12px;position:relative;padding:4px 5px;cursor:pointer;font-size:.82rem;touch-action:manipulation}
+.day.blank{background:transparent;cursor:default}
+.day.today{outline:2px solid var(--acc)}
+.day.sel{background:var(--acc);color:#fff}
+.day .ev{position:absolute;left:0;right:0;top:46%;text-align:center;font-size:1.15rem;line-height:1}
+.day .st{position:absolute;right:3px;bottom:2px;font-size:.7rem;line-height:1}
+.day.past{opacity:.55}
+#panel{background:var(--card);border-radius:16px;padding:14px;margin-top:12px}
+#panel h2{margin:0 0 6px;font-size:1.05rem}
+.evt{padding:8px 0;border-top:1px solid var(--line);line-height:1.35}
+.evt b{display:block}
+.evt span{font-size:.9rem;opacity:.8}
+.btns{display:flex;gap:8px;margin-top:10px}
+.btns button{flex:1;border:2px solid var(--acc);background:transparent;color:var(--ink);border-radius:12px;padding:10px 4px;font:600 .9rem inherit;cursor:pointer;touch-action:manipulation}
+.btns button.on{background:var(--acc);color:#fff}
+#week{margin-top:10px;font-size:.9rem;font-weight:700}
+h3{margin:22px 0 8px;font-size:1.05rem}
+.hl{display:flex;gap:12px;align-items:center;background:var(--card);border-radius:14px;padding:11px 13px;margin:8px 0;cursor:pointer}
+.hl .e{font-size:1.5rem}
+.hl small{display:block;opacity:.7}
+.legend{font-size:.8rem;opacity:.7;text-align:center;margin-top:10px}
+#welcome{position:fixed;inset:0;z-index:10;background:rgba(40,10,22,.55);display:flex;align-items:center;justify-content:center;padding:20px;
+ opacity:1;transition:opacity .35s}
+#welcome.hide{opacity:0;pointer-events:none}
+#welcome .card{background:var(--card);color:var(--ink);border-radius:24px;padding:22px 20px 20px;max-width:380px;width:100%;text-align:center;
+ box-shadow:0 20px 50px rgba(0,0,0,.35);animation:pop .45s ease-out}
+@keyframes pop{from{transform:scale(.85) translateY(14px);opacity:0}}
+#welcome h2{font-size:1.9rem;margin:0 0 4px}
+#welcome p{margin:0 0 12px;opacity:.8;line-height:1.4}
+#welcome svg{width:100%;height:auto;display:block;color:var(--ink);margin:6px 0 14px}
+#welcome button{border:0;background:var(--acc);color:#fff;font:700 1.05rem/1 inherit;padding:14px 26px;border-radius:999px;cursor:pointer;touch-action:manipulation}
+#lobster{animation:wiggle 2.4s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
+#duckg{animation:bob 2s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
+#hrt{animation:beat 1.2s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 50%}
+@keyframes wiggle{50%{transform:rotate(-2deg)}}
+@keyframes bob{50%{transform:translateY(-6px)}}
+@keyframes beat{50%{transform:scale(1.3)}}
+@media (prefers-reduced-motion:reduce){#lobster,#duckg,#hrt,#welcome .card{animation:none}}
+</style>
+</head>
+<body>
+<div id="welcome" role="dialog" aria-label="Hi Emily">
+  <div class="card">
+    <h2>Hi Em Oi (Emily)! 💗</h2>
+    <p>Here's my 3 month plan :D<br>Feedback appreciated!</p>
+    <svg viewBox="0 0 1040 680" aria-label="Adam the lobster and Emily the duck" fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+<g transform="translate(-30,-965)">
+ <g id="lobster">
+  <path d="M82 1028 L118 1083 L152 1025 Q200 1060 185 1115 Q165 1168 118 1170 Q60 1160 47 1105 Q45 1060 82 1028 Z"/>
+  <path d="M472 1028 L508 1083 L542 1025 Q590 1060 575 1115 Q555 1168 508 1170 Q450 1160 437 1105 Q435 1060 472 1028 Z"/>
+  <path d="M148 1163 L228 1245 M478 1163 L400 1245 M188 980 L290 1155 M437 980 L335 1155"/>
+  <ellipse cx="312" cy="1297" rx="92" ry="140"/>
+  <circle cx="282" cy="1215" r="9" fill="currentColor" stroke="none"/><circle cx="344" cy="1215" r="9" fill="currentColor" stroke="none"/>
+  <path d="M278 1263 Q312 1290 348 1263"/>
+  <circle cx="252" cy="1268" r="14"/><circle cx="375" cy="1268" r="14"/>
+  <path d="M162 1338 L215 1318 M166 1390 L222 1362 M190 1438 L243 1405 M410 1318 L465 1338 M400 1362 L460 1392 M380 1405 L435 1438"/>
+  <ellipse cx="312" cy="1468" rx="68" ry="28"/><ellipse cx="312" cy="1520" rx="52" ry="22"/>
+  <ellipse cx="285" cy="1592" rx="22" ry="35"/><ellipse cx="340" cy="1592" rx="22" ry="35"/>
+  <path d="M312 1552 Q298 1600 312 1637 Q326 1600 312 1552 Z"/>
+ </g>
+ <path d="M575 1133 Q620 1360 780 1482"/>
+ <g id="duckg">
+  <circle cx="827" cy="1340" r="48"/>
+  <circle cx="808" cy="1325" r="6" fill="currentColor" stroke="none"/>
+  <path d="M783 1322 L730 1338 L783 1355"/>
+  <path d="M825 1292 Q835 1272 852 1278"/>
+  <path d="M797 1385 L797 1455 M850 1385 L850 1425"/>
+  <ellipse cx="890" cy="1497" rx="112" ry="82"/>
+  <path d="M995 1465 L1055 1435 L1003 1515"/>
+  <path d="M842 1493 Q905 1440 968 1495 Q905 1535 842 1493 Z"/>
+  <path d="M850 1575 L850 1632 L806 1634 M920 1575 L920 1632 L876 1634"/>
+  <path id="hrt" d="M780 1245 C760 1228 755 1212 768 1208 C775 1206 780 1212 780 1215 C780 1212 785 1206 792 1208 C805 1212 800 1228 780 1245 Z"/>
+ </g>
+</g>
+</svg>
+    <button id="open">Let's see 🦞🦆</button>
+  </div>
+</div>
+<main>
+  <h1>Adam's plan 💗</h1>
+  <div class="aim" id="disclaimer">
+    📝 <b>Heads up:</b> these plans aren't concrete in terms of locations, but here's what I'd like to happen, with rough milestone dates. They can move a little, but ideally <b>3–4 days per week, including sleepovers!!</b> 💗
+  </div>
+  <div class="nav"><button id="prev" aria-label="Previous month">‹</button><div id="title"></div><button id="next" aria-label="Next month">›</button></div>
+  <div class="grid" id="grid"></div>
+  <div class="legend">🌙 evening · 🛏️ sleepover · tap a day to mark it</div>
+  <div id="panel"></div>
+  <h3>Milestones and highlights</h3>
+  <div id="hls"></div>
+  <div class="aim" id="rhythm">
+    <b>💗 3–4 days together per week</b> (including 1 per weekend)<br>
+    Ideally 2 weekdays + 1 weekend, or 3 weekdays + 1 weekend.<br>
+    🌙 Weekday: coffee or dinner, around 2 hours in the evening<br>
+    🛏️ Weekend: sleepover<br>
+    Dates are flexible, not concrete!<br>
+    <b>First 4 weeks:</b> time together and rebuilding our bond
+  </div>
+</main>
+<script>
+// ---- Edit your plan here! (date is YYYY-MM-DD) ----
+const EVENTS = [
+  {date:"2026-10-29", emoji:"✈️", title:"Airport pickup? (29th or 30th, TBC)", note:"Personal airport collection, featuring a pandan cake and mochi for you! Gifted by Adam! 🍰"},
+  {date:"2026-10-30", emoji:"✈️", title:"Airport pickup? (29th or 30th, TBC)", note:"Personal airport collection, featuring a pandan cake and mochi for you! Gifted by Adam! 🍰"},
+  {date:"2026-10-31", emoji:"🎃", title:"Halloween", note:"We can go pumpkin carving! Otherwise, if you wanna go on a night out, I guess we can dress up haha 🎃👻"},
+  {date:"2026-11-03", emoji:"☕", title:"Catch-up dinner", note:"Placeholder: coffee or dinner for a couple of hours"},
+  {date:"2026-11-07", emoji:"🌆", title:"Sky Garden", note:"London event. Free, but book tickets in advance. Placeholder: go near sunset"},
+  {date:"2026-11-10", emoji:"🎤", title:"Karaoke again!", note:"Rebuilding our bond: pick your best songs"},
+  {date:"2026-11-14", emoji:"🎳", title:"Bowling", note:"Milestone! Friendly competition (loser buys dessert)"},
+  {date:"2026-11-17", emoji:"⛳", title:"Mini-golf", note:"Rebuilding our bond"},
+  {date:"2026-11-21", emoji:"👫", title:"Meet my friends", note:"Milestone! Within the first 5 weeks, ideally after week 4. Placeholder date, see note about 27 Nov"},
+  {date:"2026-11-24", emoji:"🍜", title:"Dinner before I go away", note:"Placeholder: a cosy dinner before 27 Nov"},
+  {date:"2026-12-10", emoji:"🍽️", title:"Welcome back dinner", note:"Placeholder: catch up after the break"},
+  {date:"2026-12-12", emoji:"🎄", title:"Christmas market", note:"Milestone! Mulled wine, snacks and lights"},
+  {date:"2026-12-25", emoji:"🎄", title:"Christmas Day", note:"Decide where we'll spend it"},
+  {date:"2026-12-26", emoji:"👨‍👩‍👧", title:"Meet my family (around Xmas, TBC)", note:"Milestone! Date TBC, depends if you are here. If not, we do a video call instead 📱"},
+  {date:"2026-12-31", emoji:"🥂", title:"New Year's Eve", note:"Plan our night"},
+  {date:"2027-01-01", emoji:"🎉", title:"New Year's Day", note:"A slow, cosy day together"},
+  {date:"2027-01-16", emoji:"🏡", title:"Mini-getaway", note:"Milestone! Weekend away near London. Suggestions: Bath (spa, Roman Baths, cosy streets), Rye (cobbled, pretty, 1h50 by train), Whitstable (seaside, oysters), Brighton (easy, 1h)"}
+];
+const BLOCKS = [
+  {from:"2026-10-23", to:"2026-10-28", title:"NO EMILY in London ❌", note:"Emily isn't back yet. Counting down!"},
+  {from:"2026-11-27", to:"2026-12-09", title:"NO ADAM ❌", note:"Adam is away from 27 Nov to 9 Dec"}
+];
+const MONTHS = [[2026,9],[2026,10],[2026,11],[2027,0]];
+// ---------------------------------------------------
+const $ = id => document.getElementById(id);
+const NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const key = (y,m,d) => `${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+const parse = k => { const [y,m,d] = k.split("-").map(Number); return new Date(y, m-1, d); };
+let status = {};
+try { status = JSON.parse(localStorage.getItem("calStatus") || "{}"); } catch(e){}
+const save = () => { try { localStorage.setItem("calStatus", JSON.stringify(status)); } catch(e){} };
+
+const now = new Date(), todayK = key(now.getFullYear(), now.getMonth(), now.getDate());
+let mi = MONTHS.findIndex(([y,m]) => y === now.getFullYear() && m === now.getMonth());
+if (mi < 0) mi = 0;
+let sel = MONTHS.some(([y,m]) => y === now.getFullYear() && m === now.getMonth()) ? todayK : "2026-10-30";
+
+function blockOn(k){ return BLOCKS.find(b => k >= b.from && k <= b.to); }
+function eventsOn(k){ return EVENTS.filter(e => e.date === k); }
+function weekCount(k){
+  const d = parse(k); d.setDate(d.getDate() - ((d.getDay()+6)%7));
+  let c = 0;
+  for (let i = 0; i < 7; i++){ if (status[key(d.getFullYear(), d.getMonth(), d.getDate())]) c++; d.setDate(d.getDate()+1); }
+  return c;
+}
+function renderGrid(){
+  const [y,m] = MONTHS[mi];
+  $("title").textContent = `${NAMES[m]} ${y}`;
+  $("prev").disabled = mi === 0; $("next").disabled = mi === MONTHS.length-1;
+  let h = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(d => `<div class="dow">${d}</div>`).join("");
+  const lead = (new Date(y,m,1).getDay()+6)%7, days = new Date(y,m+1,0).getDate();
+  for (let i = 0; i < lead; i++) h += `<div class="day blank"></div>`;
+  for (let d = 1; d <= days; d++){
+    const k = key(y,m,d), ev = eventsOn(k), st = status[k], bl = blockOn(k);
+    h += `<div class="day ${bl?"away":""} ${k===todayK?"today":""} ${k===sel?"sel":""} ${k<todayK?"past":""}" data-k="${k}">${d}` +
+      (bl ? `<div class="ev">❌</div>` : ev.length ? `<div class="ev">${ev[0].emoji}</div>` : "") +
+      (st ? `<div class="st">${st==="e"?"🌙":"🛏️"}</div>` : "") + `</div>`;
+  }
+  $("grid").innerHTML = h;
+}
+function renderPanel(){
+  const d = parse(sel), ev = eventsOn(sel), st = status[sel], c = weekCount(sel), bl = blockOn(sel);
+  $("panel").innerHTML = `<h2>${d.toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"})}</h2>` +
+    (bl ? `<div class="evt blk">${bl.title}<br><span style="font-weight:400">${bl.note}</span></div>` : "") +
+    (ev.length ? ev.map(e => `<div class="evt"><b>${e.emoji} ${e.title}</b><span>${e.note||""}</span></div>`).join("") : (bl ? "" : `<span style="opacity:.7;font-size:.9rem">Nothing planned yet</span>`)) +
+    (bl ? "" : `<div class="btns"><button data-s="e" class="${st==="e"?"on":""}">🌙 Evening</button><button data-s="s" class="${st==="s"?"on":""}">🛏️ Sleepover</button></div>`) +
+    `<div id="week">This week: ${c} ${c===1?"day":"days"} together ${c>=3?"✅":"(aim for 3–4, incl. 1 weekend)"}</div>`;
+}
+function renderHls(){
+  $("hls").innerHTML = [...EVENTS].sort((a,b) => a.date.localeCompare(b.date)).map(e =>
+    `<div class="hl" data-k="${e.date}"><div class="e">${e.emoji}</div><div><b>${e.title}</b><small>${parse(e.date).toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"})}</small></div></div>`).join("");
+}
+function go(k){
+  sel = k; const d = parse(k);
+  const i = MONTHS.findIndex(([y,m]) => y === d.getFullYear() && m === d.getMonth());
+  if (i >= 0) mi = i;
+  renderAll();
+}
+function renderAll(){ renderGrid(); renderPanel(); }
+$("grid").addEventListener("click", e => { const c = e.target.closest(".day[data-k]"); if (c) go(c.dataset.k); });
+$("hls").addEventListener("click", e => { const c = e.target.closest(".hl"); if (c){ go(c.dataset.k); scrollTo({top:0, behavior:"smooth"}); } });
+$("panel").addEventListener("click", e => {
+  const b = e.target.closest("button[data-s]"); if (!b) return;
+  if (status[sel] === b.dataset.s) delete status[sel]; else status[sel] = b.dataset.s;
+  save(); renderAll();
+});
+$("prev").onclick = () => { if (mi > 0){ mi--; renderGrid(); } };
+$("next").onclick = () => { if (mi < MONTHS.length-1){ mi++; renderGrid(); } };
+let x0 = null;
+$("grid").addEventListener("touchstart", e => { x0 = e.touches[0].clientX; }, {passive:true});
+$("grid").addEventListener("touchend", e => {
+  if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null;
+  if (dx < -60 && mi < MONTHS.length-1){ mi++; renderGrid(); } else if (dx > 60 && mi > 0){ mi--; renderGrid(); }
+});
+function closeWelcome(){ $("welcome").classList.add("hide"); }
+$("open").addEventListener("click", closeWelcome);
+$("welcome").addEventListener("click", e => { if (e.target.id === "welcome") closeWelcome(); });
+renderAll(); renderHls();
+</script>
+</body>
+</html>
